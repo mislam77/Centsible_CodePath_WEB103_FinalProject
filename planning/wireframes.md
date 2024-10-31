@@ -4,18 +4,23 @@ Reference the Creating an Entity Relationship Diagram final project guide in the
 
 ## List of Pages
 
-[👉🏾👉🏾👉🏾 List the pages you expect to have in your app, with a ⭐ next to pages you have wireframed]
+**1. Landing Page - Dashboard ⭐**
+**2. Add New Transaction ⭐**
+**3. View Transaction History ⭐**
+**4. Manage Categories ⭐**
 
-## Wireframe 1: [page title]
+## Wireframe 1: [Landing Page - Dashboard ⭐]
 
-[👉🏾👉🏾👉🏾 include wireframe 1]
+![Landing Page - Dashboard](https://i.imgur.com/ppL8kK7.png)
 
-## Wireframe 2: [page title]
+## Wireframe 2: [Add New Transaction ⭐]
 
-[👉🏾👉🏾👉🏾 include wireframe 2]
+![Add New Transaction](https://i.imgur.com/Vke2HJS.png)
 
-## Wireframe 3: [page title]
+## Wireframe 3: [View Transaction History ⭐]
 
-[👉🏾👉🏾👉🏾 include wireframe 3]
+![View Transaction History](https://i.imgur.com/znDt019.png)
 
-[👉🏾👉🏾👉🏾 include more wireframes as desired]
+## Wireframe 4: [Manage Categories ⭐]
+
+![Manage Categories](https://i.imgur.com/X2KI0tY.png)
