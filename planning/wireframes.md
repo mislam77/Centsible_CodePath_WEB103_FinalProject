@@ -5,8 +5,11 @@ Reference the Creating an Entity Relationship Diagram final project guide in the
 ## List of Pages
 
 **1. Landing Page - Dashboard ⭐**
+
 **2. Add New Transaction ⭐**
+
 **3. View Transaction History ⭐**
+
 **4. Manage Categories ⭐**
 
 ## Wireframe 1: [Landing Page - Dashboard ⭐]
