@@ -42,7 +42,7 @@ TBD: [gif goes here]
 
 Users will be able to properly authenticate with multiple ways so they can securely access their data 
 
-TBD: [gif goes here]
+<img src="./demo/centsible-authentication.gif" alt="Authentication" />
 
 ### Filter Transactions 
 
