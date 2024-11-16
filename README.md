@@ -32,19 +32,19 @@ Users can Log and track new Expenses or Income, provide details like Amount, cat
 
 TBD: [gif goes here]
 
-### Transactions Page
+### ✅ Transactions Page
 
 This page provides them summary of all their transactions so far, and all realted info regarding each transaction. 
 
 <img src="./demo/centsible-transactions-page.gif" alt="Transactions Page" />
 
-### User Authentication
+### ✅ User Authentication
 
 Users will be able to properly authenticate with multiple ways so they can securely access their data 
 
 <img src="./demo/centsible-authentication.gif" alt="Authentication" />
 
-### Filter Transactions 
+### ✅ Filter Transactions 
 
 Users will be able to filter transactions by date range, category, amount etc.
 
