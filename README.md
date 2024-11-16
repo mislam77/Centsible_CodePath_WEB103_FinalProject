@@ -36,7 +36,7 @@ TBD: [gif goes here]
 
 This page provides them summary of all their transactions so far, and all realted info regarding each transaction. 
 
-TBD: [gif goes here]
+<img src="./demo/centsible-transactions-page.gif" alt="Transactions Page" />
 
 ### User Authentication
 
@@ -48,7 +48,7 @@ Users will be able to properly authenticate with multiple ways so they can secur
 
 Users will be able to filter transactions by date range, category, amount etc.
 
-TBD: [gif goes here]
+<img src="./demo/centsible-filter-transactions.gif" alt="Filter Transactions" />
 
 ### Manage Categories
 
