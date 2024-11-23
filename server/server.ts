@@ -10,6 +10,7 @@ import historyPeriodsRoutes from "./routes/historyPeriods";
 import statsRoutes from "./routes/stats";
 import transactionsRoutes from "./routes/transactions";
 import categoryRoutes from "./routes/category";
+import path from "path";
 import cors from "cors";
 
 const app = express();
@@ -50,6 +51,14 @@ app.use("/api/history-periods", historyPeriodsRoutes);
 app.use("/api/stats", statsRoutes);
 app.use("/api/transactions", transactionsRoutes);
 app.use("/api/categories", categoryRoutes);
+
+// Serve static files from the client build directory
+app.use(express.static(path.join(__dirname, "../client/dist")));
+
+// Catch-all route to serve the index.html file for any other routes
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+});
 
 // Start server
 const PORT = process.env.PORT || 3000;
