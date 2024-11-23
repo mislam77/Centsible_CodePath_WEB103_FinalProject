@@ -15,7 +15,7 @@ export const Navbar = () => {
 
     const handleSignOut = async () => {
         try {
-            const response = await fetch("http://localhost:3000/api/auth/logout", {
+            const response = await fetch("https://web103-finalproject-centsible.onrender.com/api/auth/logout", {
                 method: "POST",
                 credentials: "include", // Ensure cookies are sent with the request
             });

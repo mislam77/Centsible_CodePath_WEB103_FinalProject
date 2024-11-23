@@ -65,7 +65,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
       toast.loading("Creating transaction...", { id: "create-transaction" });
 
       try {
-        const response = await fetch("http://localhost:3000/api/transactions", {
+        const response = await fetch("https://web103-finalproject-centsible.onrender.com/api/transactions", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",

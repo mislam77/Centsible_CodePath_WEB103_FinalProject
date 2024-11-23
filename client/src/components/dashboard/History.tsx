@@ -40,7 +40,7 @@ function History() {
         }
     
         const response = await fetch(
-          `http://localhost:3000/api/history?${queryParams.toString()}`,
+          `https://web103-finalproject-centsible.onrender.com/api/history?${queryParams.toString()}`,
           {
             credentials: "include",
           }

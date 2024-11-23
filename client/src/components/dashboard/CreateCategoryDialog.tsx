@@ -54,7 +54,7 @@ function CreateCategoryDialog({ type, successCallback, trigger }: Props) {
 
   const { mutate, status } = useMutation({
     mutationFn: async (values: CreateCategorySchemaType) => {
-      const response = await fetch("http://localhost:3000/api/categories", {
+      const response = await fetch("https://web103-finalproject-centsible.onrender.com/api/categories", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),

@@ -25,7 +25,7 @@ function DeleteCategoryDialog({ category, trigger }: Props) {
 
   const deleteMutation = useMutation({
     mutationFn: async ({ name, type }: { name: string; type: TransactionType }) => {
-      const response = await fetch(`http://localhost:3000/api/categories/${category.id}`, {
+      const response = await fetch(`https://web103-finalproject-centsible.onrender.com/api/categories/${category.id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

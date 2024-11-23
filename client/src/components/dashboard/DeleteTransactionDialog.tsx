@@ -22,7 +22,7 @@ import {
   
     // Delete transaction API call
     const deleteTransaction = async (transactionId: string) => {
-      const response = await fetch(`http://localhost:3000/api/transactions/${transactionId}`, {
+      const response = await fetch(`https://web103-finalproject-centsible.onrender.com/api/transactions/${transactionId}`, {
         method: "DELETE",
         credentials: "include",
       });

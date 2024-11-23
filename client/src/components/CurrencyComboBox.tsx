@@ -31,7 +31,7 @@ export function CurrencyComboBox() {
   const userSettings = useQuery({
     queryKey: ["userSettings"],
     queryFn: () =>
-      fetch(`http://localhost:3000/api/user-settings`, {
+      fetch(`https://web103-finalproject-centsible.onrender.com/api/user-settings`, {
         credentials: "include",
       }).then((res) => {
         if (!res.ok) {
@@ -53,7 +53,7 @@ export function CurrencyComboBox() {
   const mutation = useMutation({
     mutationFn: async (currencyValue: string) => {
       const response = await fetch(
-        `http://localhost:3000/api/user-settings`,
+        `https://web103-finalproject-centsible.onrender.com/api/user-settings`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },

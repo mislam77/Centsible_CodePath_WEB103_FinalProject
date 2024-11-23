@@ -50,7 +50,7 @@ export function CategoryList({ type }: { type: TransactionType }) {
     queryKey: ["categories", type],
     queryFn: async () => {
       const response = await fetch(
-        `http://localhost:3000/api/categories?type=${type}`, {
+        `https://web103-finalproject-centsible.onrender.com/api/categories?type=${type}`, {
           credentials: "include",
         }
       );

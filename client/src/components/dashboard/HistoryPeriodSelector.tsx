@@ -30,7 +30,7 @@ function HistoryPeriodSelector({
   useEffect(() => {
     const fetchHistoryPeriods = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/history-periods", {
+        const response = await fetch("https://web103-finalproject-centsible.onrender.com/api/history-periods", {
           credentials: "include",
         });
 

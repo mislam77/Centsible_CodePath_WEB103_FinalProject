@@ -21,7 +21,7 @@ function Overview() {
       try {
         setLoading(true);
         const response = await fetch(
-          `http://localhost:3000/api/overview?from=${dateRange.from.toISOString()}&to=${dateRange.to.toISOString()}`,
+          `https://web103-finalproject-centsible.onrender.com/api/overview?from=${dateRange.from.toISOString()}&to=${dateRange.to.toISOString()}`,
           {
             credentials: "include",
           }

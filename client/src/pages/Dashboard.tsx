@@ -13,7 +13,7 @@ export const Dashboard = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/auth/user", {
+        const response = await fetch("https://web103-finalproject-centsible.onrender.com/api/auth/user", {
           credentials: "include",
         });
 

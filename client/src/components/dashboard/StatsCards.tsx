@@ -27,7 +27,7 @@ function StatsCards({ from, to }: Props) {
       try {
         setIsLoading(true);
         const response = await fetch(
-          `http://localhost:3000/api/stats/balance?from=${DateToUTCDate(from)}&to=${DateToUTCDate(to)}`,
+          `https://web103-finalproject-centsible.onrender.com/api/stats/balance?from=${DateToUTCDate(from)}&to=${DateToUTCDate(to)}`,
           { credentials: "include" }
         );
 

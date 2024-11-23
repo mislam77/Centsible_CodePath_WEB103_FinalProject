@@ -133,7 +133,7 @@ function TransactionTable({ from, to }: Props) {
       try {
         setIsLoading(true);
         const response = await fetch(
-          `http://localhost:3000/api/transactions?from=${from.toISOString()}&to=${to.toISOString()}`,
+          `https://web103-finalproject-centsible.onrender.com/api/transactions?from=${from.toISOString()}&to=${to.toISOString()}`,
           {
             credentials: "include",
           }

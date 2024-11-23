@@ -25,7 +25,7 @@ export function Transactions() {
         });
 
         const response = await fetch(
-          `http://localhost:3000/api/transactions?${queryParams.toString()}`,
+          `https://web103-finalproject-centsible.onrender.com/api/transactions?${queryParams.toString()}`,
           {
             credentials: "include",
           }
