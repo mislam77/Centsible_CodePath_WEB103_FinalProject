@@ -2,9 +2,9 @@
 
 CodePath WEB103 Final Project
 
-Designed and developed by: **Arihant Tiwari** & **Md Waisul Islam** 
+Designed and developed by: **Arihant Tiwari** & **Md Wasiul Islam** 
 
-🔗 Link to deployed app: https://web103-finalproject-centsible-client.onrender.com/
+🔗 Link to deployed app: [Render App](https://web103-finalproject-centsible-client.onrender.com/)
 
 ## About
 
@@ -20,7 +20,7 @@ Centsible is inspired by the idea that financial health is a key component of ov
 
 ## Tech Stack
 
-Frontend: React, Tailwind CSS, Next.js
+Frontend: React, Tailwind CSS
 
 Backend: Express.js, PostgreSQL
 
