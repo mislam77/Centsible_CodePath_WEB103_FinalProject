@@ -13,6 +13,7 @@ import categoryRoutes from "./routes/category";
 import cors from "cors";
 
 const app = express();
+app.enable('trust proxy')
 
 // Middleware
 app.use(
