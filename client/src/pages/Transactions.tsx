@@ -1,115 +1,88 @@
-import React, { useState } from 'react'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
-import { Button } from '@/components/ui/button'
-import { format } from 'date-fns'
+import { useEffect, useState } from "react";
+import TransactionTable from "@/components/dashboard/TransactionTable";
+import { MAX_DATE_RANGE_DAYS } from "@/lib/constants";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
+import { differenceInDays, startOfMonth } from "date-fns";
+import { toast } from "sonner";
 
-const dummyTransactions = [
-    { id: 1, date: '2023-10-01', category: 'Food', amount: 20, description: 'Lunch' },
-    { id: 2, date: '2023-10-02', category: 'Travel', amount: 50, description: 'Taxi' },
-    { id: 3, date: '2023-10-03', category: 'Entertainment', amount: 30, description: 'Movie' },
-    { id: 4, date: '2023-10-04', category: 'Food', amount: 15, description: 'Dinner' },
-    { id: 5, date: '2023-10-05', category: 'Travel', amount: 100, description: 'Flight' },
-    { id: 6, date: '2023-10-06', category: 'Entertainment', amount: 25, description: 'Concert' },
-    { id: 7, date: '2023-10-07', category: 'Food', amount: 10, description: 'Breakfast' },
-    { id: 8, date: '2023-10-08', category: 'Travel', amount: 40, description: 'Bus' },
-    { id: 9, date: '2023-10-09', category: 'Entertainment', amount: 20, description: 'Game' },
-    { id: 10, date: '2023-10-10', category: 'Food', amount: 30, description: 'Brunch' },
-    // Add more dummy transactions here
-]
+export function Transactions() {
+  const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
+    from: startOfMonth(new Date()),
+    to: new Date(),
+  });
 
-const TransactionItem = ({ transaction }) => (
-    <Card className="mb-4 bg-zinc-800 text-white">
-        <CardHeader>
-            <CardTitle>{transaction.description}</CardTitle>
-        </CardHeader>
-        <CardContent>
-            <div className="flex justify-between">
-                <span>{transaction.category}</span>
-                <span>{format(new Date(transaction.date), 'MMM dd, yyyy')}</span>
-                <span>${transaction.amount}</span>
-            </div>
-        </CardContent>
-    </Card>
-)
+  const [transactions, setTransactions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-const Filter = ({ filters, setFilters }) => (
-    <div className="flex gap-4 mb-4">
-        <Input
-            type="date"
-            value={filters.startDate}
-            onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
-            placeholder="Start Date"
-            className="bg-zinc-700 text-white"
-        />
-        <Input
-            type="date"
-            value={filters.endDate}
-            onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-            placeholder="End Date"
-            className="bg-zinc-700 text-white"
-        />
-        <Select
-            value={filters.category}
-            onValueChange={(value) => setFilters({ ...filters, category: value })}
-        >
-            <SelectTrigger className="bg-zinc-700 text-white">
-                <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent className="bg-zinc-700 text-white">
-                <SelectItem value="All">All</SelectItem>
-                <SelectItem value="Food">Food</SelectItem>
-                <SelectItem value="Travel">Travel</SelectItem>
-                <SelectItem value="Entertainment">Entertainment</SelectItem>
-                {/* Add more categories here */}
-            </SelectContent>
-        </Select>
-        <Input
-            type="number"
-            value={filters.minAmount}
-            onChange={(e) => setFilters({ ...filters, minAmount: e.target.value })}
-            placeholder="Min Amount"
-            className="bg-zinc-700 text-white"
-        />
-        <Input
-            type="number"
-            value={filters.maxAmount}
-            onChange={(e) => setFilters({ ...filters, maxAmount: e.target.value })}
-            placeholder="Max Amount"
-            className="bg-zinc-700 text-white"
-        />
-        <Button onClick={() => setFilters({ startDate: '', endDate: '', category: 'All', minAmount: '', maxAmount: '' })}>
-            Reset
-        </Button>
-    </div>
-)
+  // Fetch transactions based on date range
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        setIsLoading(true);
+        const queryParams = new URLSearchParams({
+          from: dateRange.from.toISOString(),
+          to: dateRange.to.toISOString(),
+        });
 
-export const Transactions = () => {
-    const [filters, setFilters] = useState({
-        startDate: '',
-        endDate: '',
-        category: 'All',
-        minAmount: '',
-        maxAmount: '',
-    })
+        const response = await fetch(
+          `http://localhost:3000/api/transactions?${queryParams.toString()}`,
+          {
+            credentials: "include",
+          }
+        );
 
-    const filteredTransactions = dummyTransactions.filter((transaction) => {
-        const startDateMatch = filters.startDate ? new Date(transaction.date) >= new Date(filters.startDate) : true
-        const endDateMatch = filters.endDate ? new Date(transaction.date) <= new Date(filters.endDate) : true
-        const categoryMatch = filters.category !== 'All' ? transaction.category === filters.category : true
-        const minAmountMatch = filters.minAmount ? transaction.amount >= filters.minAmount : true
-        const maxAmountMatch = filters.maxAmount ? transaction.amount <= filters.maxAmount : true
-        return startDateMatch && endDateMatch && categoryMatch && minAmountMatch && maxAmountMatch
-    })
+        if (response.ok) {
+          const data = await response.json();
+          setTransactions(data);
+        } else if (response.status === 401) {
+          toast.error("Unauthorized. Please log in.");
+        } else {
+          toast.error("Failed to fetch transactions.");
+        }
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+        toast.error("An error occurred while fetching transactions.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    return (
-        <div className="p-4 bg-zinc-900 text-white min-h-screen">
-            <h1 className="text-2xl font-bold mb-4">Transactions</h1>
-            <Filter filters={filters} setFilters={setFilters} />
-            {filteredTransactions.map((transaction) => (
-                <TransactionItem key={transaction.id} transaction={transaction} />
-            ))}
+    fetchTransactions();
+  }, [dateRange]);
+
+  return (
+    <>
+      <div className="border-b bg-card">
+        <div className="container flex flex-wrap items-center justify-between gap-6 py-8">
+          <div>
+            <p className="text-3xl font-bold">Transactions History</p>
+          </div>
+          <DateRangePicker
+            initialDateFrom={dateRange.from}
+            initialDateTo={dateRange.to}
+            showCompare={false}
+            onUpdate={(values) => {
+              const { from, to } = values.range;
+
+              if (!from || !to) return;
+              if (differenceInDays(to, from) > MAX_DATE_RANGE_DAYS) {
+                toast.error(
+                  `The selected date range is too big. Max allowed range is ${MAX_DATE_RANGE_DAYS} days!`
+                );
+                return;
+              }
+
+              setDateRange({ from, to });
+            }}
+          />
         </div>
-    )
+      </div>
+      <div className="container">
+      <TransactionTable
+        from={dateRange.from}
+        to={dateRange.to}
+      />
+      </div>
+    </>
+  );
 }
