@@ -71,12 +71,13 @@ Complete the checklist below detailing each baseline, custom, and stretch featur
 
 ## Final Demo GIF
 
-🔗 [Here's a GIF walkthrough of the final project](👉🏾👉🏾👉🏾 your link here)
+🔗 [Here's a GIF walkthrough of the final project]
+<img src="../demo/centsible-final-demo.gif" alt="Final Demo" />
 
 ## Reflection
 ### 1. What went well during this unit?
 
-👉🏾👉🏾👉🏾 Our team successfully deployed the project on Railway and ensured all features were functioning correctly. We also managed to keep our project board updated, which helped us stay organized.
+👉🏾👉🏾👉🏾 Our team successfully deployed the project on Render and ensured all features were functioning correctly. We also managed to keep our project board updated, which helped us stay organized.
 
 ### 2. What were some challenges your group faced in this unit?
 

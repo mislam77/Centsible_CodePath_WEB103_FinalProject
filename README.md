@@ -26,11 +26,11 @@ Backend: Express.js, PostgreSQL
 
 ## Features
 
-### Log Expenses and Income
+### ✅ Log Expenses and Income
 
 Users can Log and track new Expenses or Income, provide details like Amount, category, description, date, 
 
-TBD: [gif goes here]
+<img src="./demo/centsible-log.gif" alt="Dashboard" />
 
 ### ✅ Transactions Page
 
@@ -50,18 +50,78 @@ Users will be able to filter transactions by date range, category, amount etc.
 
 <img src="./demo/centsible-filter-transactions.gif" alt="Filter Transactions" />
 
-### Manage Categories
+### ✅ Manage Categories
 
 To properly categorize each transaction into groups, users will be able to create their own personal categories. 
 
-TBD: [gif goes here]
-
-### User Authentication
-
-Users will be able to properly authenticate with multiple ways so they can securely access their data 
-
-TBD: [gif goes here]
+<img src="./demo/centsible-manage-categories.gif" alt="Manage Categories" />
 
 ## Installation Instructions
 
-TBD [instructions go here]
+To run the Centsible app locally, follow these steps:
+
+### Prerequisites
+
+Ensure you have the following installed on your machine:
+- Node.js (v14 or higher)
+- npm (v6 or higher)
+- PostgreSQL
+
+### Backend Setup
+
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/yourusername/web103_finalproject_Centsible.git
+    cd web103_finalproject_Centsible/server
+    ```
+
+2. Install dependencies:
+    ```bash
+    npm install
+    ```
+
+3. Create a `.env.local` file in the `server` directory and add your PostgreSQL database credentials:
+    ```
+    DB_USER=your_db_user
+    DB_PASSWORD=your_db_password
+    DB_HOST=localhost
+    DB_PORT=5432
+    DB_NAME=centsible
+    ```
+
+4. Run database migrations:
+    ```bash
+    npx sequelize-cli db:migrate
+    ```
+
+5. Start the backend server:
+    ```bash
+    npm start
+    ```
+
+### Frontend Setup
+
+1. Navigate to the frontend directory:
+    ```bash
+    cd ../client
+    ```
+
+2. Install dependencies:
+    ```bash
+    npm install
+    ```
+
+3. Create a `.env.local` file in the `frontend` directory and add the backend API URL:
+    ```
+    NEXT_PUBLIC_API_URL=http://localhost:5000
+    ```
+
+4. Start the frontend development server:
+    ```bash
+    npm run dev
+    ```
+
+### Access the App
+
+Open your browser and navigate to `http://localhost:3000` to access the Centsible app.
+
