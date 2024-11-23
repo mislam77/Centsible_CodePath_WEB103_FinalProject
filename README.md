@@ -4,7 +4,7 @@ CodePath WEB103 Final Project
 
 Designed and developed by: **Arihant Tiwari** & **Md Waisul Islam** 
 
-🔗 Link to deployed app: 
+🔗 Link to deployed app: https://web103-finalproject-centsible-client.onrender.com/
 
 ## About
 
