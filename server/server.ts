@@ -31,7 +31,7 @@ app.use(
 // Ensure CORS allows credentials
 app.use(
   cors({
-    origin: "https://web103-finalproject-centsible.onrender.com", // React app origin
+    origin: "https://web103-finalproject-centsible-client.onrender.com", // React app origin
     credentials: true, // Allow cookies to be sent
   })
 );
