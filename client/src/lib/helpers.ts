@@ -1,6 +1,10 @@
 import { Currencies } from "@/lib/currencies";
 
-export function DateToUTCDate(date: Date) {
+export function DateToUTCDate(date: Date | undefined): string {
+  if (!date || isNaN(date.getTime())) {
+    throw new Error("Invalid date provided");
+  }
+
   return new Date(
     Date.UTC(
       date.getFullYear(),
@@ -11,7 +15,7 @@ export function DateToUTCDate(date: Date) {
       date.getSeconds(),
       date.getMilliseconds()
     )
-  );
+  ).toISOString();
 }
 
 export function GetFormatterForCurrency(currency: string) {

@@ -1,13 +1,13 @@
+import React, { ReactNode, useEffect, useState, useCallback } from "react";
 import SkeletonWrapper from "@/components/SkeletonWrapper";
 import { Card } from "@/components/ui/card";
 import { DateToUTCDate } from "@/lib/helpers";
 import { TrendingDown, TrendingUp, Wallet } from "lucide-react";
-import React, { ReactNode, useEffect, useState, useCallback } from "react";
 import CountUp from "react-countup";
 
 interface Props {
-  from: Date;
-  to: Date;
+  from?: Date; // Allow `from` and `to` to be optional
+  to?: Date;
 }
 
 function StatsCards({ from, to }: Props) {
@@ -18,13 +18,16 @@ function StatsCards({ from, to }: Props) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (!from || !to) {
+      console.error("Invalid date range provided for StatsCards");
+      return;
+    }
+
     const fetchStats = async () => {
       try {
         setIsLoading(true);
         const response = await fetch(
-          `http://localhost:3000/api/stats/balance?from=${DateToUTCDate(
-            from
-          )}&to=${DateToUTCDate(to)}`,
+          `http://localhost:3000/api/stats/balance?from=${DateToUTCDate(from)}&to=${DateToUTCDate(to)}`,
           { credentials: "include" }
         );
 

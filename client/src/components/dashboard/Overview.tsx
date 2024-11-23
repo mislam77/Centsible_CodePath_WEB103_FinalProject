@@ -72,11 +72,8 @@ function Overview() {
         </div>
       </div>
       <div className="container flex w-full flex-col gap-2">
-        {/* Stats Cards */}
-        <StatsCards stats={stats} loading={loading} />
-
-        {/* Categories Stats */}
-        <CategoriesStats categories={categories} loading={loading} />
+        <StatsCards from={dateRange.from} to={dateRange.to} />
+        <CategoriesStats from={dateRange.from} to={dateRange.to} />
       </div>
     </>
   );

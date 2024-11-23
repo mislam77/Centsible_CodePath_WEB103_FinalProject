@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -27,25 +25,19 @@ import {
 } from "@/components/ui/popover";
 import { TransactionType } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import {
-  CreateCategorySchema,
-  CreateCategorySchemaType,
-} from "@/schema/categories";
+import { CreateCategorySchema, CreateCategorySchemaType } from "@/schema/categories";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleOff, Loader2, PlusSquare } from "lucide-react";
-import React, { ReactNode, useCallback, useState } from "react";
+import { ReactNode, useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CreateCategory } from "@/app/(dashboard)/_actions/categories";
-import { Category } from "@prisma/client";
 import { toast } from "sonner";
-import { useTheme } from "next-themes";
 
 interface Props {
   type: TransactionType;
-  successCallback: (category: Category) => void;
+  successCallback: (category: any) => void; // Adjust type to fit your category object
   trigger?: ReactNode;
 }
 
@@ -59,11 +51,22 @@ function CreateCategoryDialog({ type, successCallback, trigger }: Props) {
   });
 
   const queryClient = useQueryClient();
-  const theme = useTheme();
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: CreateCategory,
-    onSuccess: async (data: Category) => {
+  const { mutate, status } = useMutation({
+    mutationFn: async (values: CreateCategorySchemaType) => {
+      const response = await fetch("http://localhost:3000/api/categories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create category");
+      }
+      return response.json();
+    },
+    onSuccess: async (data) => {
       form.reset({
         name: "",
         icon: "",
@@ -76,11 +79,9 @@ function CreateCategoryDialog({ type, successCallback, trigger }: Props) {
 
       successCallback(data);
 
-      await queryClient.invalidateQueries({
-        queryKey: ["categories"],
-      });
+      await queryClient.invalidateQueries({ queryKey: ["categories"] });
 
-      setOpen((prev) => !prev);
+      setOpen(false);
     },
     onError: () => {
       toast.error("Something went wrong", {
@@ -107,7 +108,7 @@ function CreateCategoryDialog({ type, successCallback, trigger }: Props) {
         ) : (
           <Button
             variant={"ghost"}
-            className="flex border-separate items-center justify-start roudned-none border-b px-3 py-3 text-muted-foreground"
+            className="flex border-separate items-center justify-start rounded-none border-b px-3 py-3 text-muted-foreground"
           >
             <PlusSquare className="mr-2 h-4 w-4" />
             Create new
@@ -185,7 +186,6 @@ function CreateCategoryDialog({ type, successCallback, trigger }: Props) {
                       <PopoverContent className="w-full">
                         <Picker
                           data={data}
-                          theme={theme.resolvedTheme}
                           onEmojiSelect={(emoji: { native: string }) => {
                             field.onChange(emoji.native);
                           }}
@@ -213,9 +213,9 @@ function CreateCategoryDialog({ type, successCallback, trigger }: Props) {
               Cancel
             </Button>
           </DialogClose>
-          <Button onClick={form.handleSubmit(onSubmit)} disabled={isPending}>
-            {!isPending && "Create"}
-            {isPending && <Loader2 className="animate-spin" />}
+          <Button onClick={form.handleSubmit(onSubmit)} disabled={status === "pending"}>
+            {status !== "pending" && "Create"}
+            {status === "pending" && <Loader2 className="animate-spin" />}
           </Button>
         </DialogFooter>
       </DialogContent>

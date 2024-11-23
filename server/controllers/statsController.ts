@@ -20,7 +20,7 @@ export const getBalanceStats = async (req: Request, res: Response): Promise<void
       SELECT
         COALESCE(SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END), 0) AS income,
         COALESCE(SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END), 0) AS expense
-      FROM Transactions
+      FROM Transaction
       WHERE userId = $1 AND date >= $2 AND date <= $3
     `;
 
@@ -50,13 +50,13 @@ export const getCategoryStats = async (req: Request, res: Response): Promise<voi
 
     const query = `
       SELECT 
-        category,
+        categoryName AS category, -- Use the correct column for category names
         COALESCE(SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END), 0) AS income,
         COALESCE(SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END), 0) AS expense
-      FROM Transactions
+      FROM Transaction
       WHERE userId = $1 AND date >= $2 AND date <= $3
-      GROUP BY category
-      ORDER BY category ASC
+      GROUP BY categoryName
+      ORDER BY categoryName ASC;
     `;
 
     const result = await pool.query(query, [userId, from, to]);

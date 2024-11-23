@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
 function History() {
   const [timeframe, setTimeframe] = useState<"month" | "year">("month");
   const [period, setPeriod] = useState({
-    month: new Date().getMonth(),
+    month: new Date().getMonth()+1,
     year: new Date().getFullYear(),
   });
   const [historyData, setHistoryData] = useState<any[]>([]);
@@ -31,18 +31,26 @@ function History() {
     const fetchHistoryData = async () => {
       try {
         setIsLoading(true);
+        const queryParams = new URLSearchParams({
+          timeframe,
+          year: period.year.toString(),
+        });
+        if (timeframe === "month") {
+          queryParams.append("month", period.month.toString());
+        }
+    
         const response = await fetch(
-          `http://localhost:3000/api/history?timeframe=${timeframe}&year=${period.year}&month=${period.month}`,
+          `http://localhost:3000/api/history?${queryParams.toString()}`,
           {
             credentials: "include",
           }
         );
-
+    
         if (response.ok) {
           const data = await response.json();
           setHistoryData(data);
         } else if (response.status === 401) {
-          navigate("/signin"); // Redirect to sign-in if unauthorized
+          navigate("/signin");
         } else {
           console.error("Failed to fetch history data");
         }
@@ -51,10 +59,10 @@ function History() {
       } finally {
         setIsLoading(false);
       }
-    };
-
+    };    
+  
     fetchHistoryData();
-  }, [timeframe, period, navigate]);
+  }, [timeframe, period, navigate]);  
 
   const dataAvailable = historyData.length > 0;
 
@@ -138,15 +146,12 @@ function History() {
                     padding={{ left: 5, right: 5 }}
                     dataKey={(data) => {
                       const { year, month, day } = data;
-                      const date = new Date(year, month, day || 1);
+                      const adjustedMonth = month - 1; // Adjusting for 0-based month index
+                      const date = new Date(year, adjustedMonth, day || 1); 
                       if (timeframe === "year") {
-                        return date.toLocaleDateString("default", {
-                          month: "long",
-                        });
+                        return date.toLocaleDateString("default", { month: "long" });
                       }
-                      return date.toLocaleDateString("default", {
-                        day: "2-digit",
-                      });
+                      return date.toLocaleDateString("default", { day: "2-digit" });
                     }}
                   />
                   <YAxis

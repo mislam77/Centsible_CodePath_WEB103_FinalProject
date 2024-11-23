@@ -23,7 +23,7 @@ export const Signin = () => {
   
       if (response.ok) {
         localStorage.setItem("isAuthenticated", "true");
-        navigate("/wizard");
+        navigate("/");
       } else {
         alert("Invalid credentials");
       }

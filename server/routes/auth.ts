@@ -1,6 +1,5 @@
 import express from "express";
 import passport from "../config/passport";
-import { pool } from "../config/database";
 
 const router = express.Router();
 
@@ -62,6 +61,21 @@ router.post("/signin", (req, res, next) => {
   )(req, res, next);
 });
 
+// Logout Route
+router.post("/logout", (req, res) => {
+  if (req.isAuthenticated()) {
+    req.logout((err) => {
+      if (err) {
+        console.error("Error during logout:", err);
+        return res.status(500).json({ message: "Failed to log out" });
+      }
+      return res.status(200).json({ message: "Logged out successfully" });
+    });
+  } else {
+    res.status(401).json({ message: "Not authenticated" });
+  }
+});
+
 // Fetch Authenticated User Route
 interface AuthenticatedUser {
   id: number;
@@ -69,16 +83,16 @@ interface AuthenticatedUser {
 }
 
 router.get("/user", (req, res) => {
-    console.log("Is Authenticated:", req.isAuthenticated());
-    console.log("User:", req.user);
-  
-    if (req.isAuthenticated()) {
-      res.json({
-        username: (req.user as AuthenticatedUser).username,
-      });
-    } else {
-      res.status(401).json({ error: "Not authenticated" });
-    }
-});   
+  console.log("Is Authenticated:", req.isAuthenticated());
+  console.log("User:", req.user);
+
+  if (req.isAuthenticated()) {
+    res.json({
+      username: (req.user as AuthenticatedUser).username,
+    });
+  } else {
+    res.status(401).json({ error: "Not authenticated" });
+  }
+});
 
 export default router;

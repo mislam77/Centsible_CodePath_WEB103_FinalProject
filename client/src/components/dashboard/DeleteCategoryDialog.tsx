@@ -1,6 +1,3 @@
-"use client";
-
-import { DeleteCategory } from "@/app/(dashboard)/_actions/categories";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,14 +10,13 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { TransactionType } from "@/lib/types";
-import { Category } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import { toast } from "sonner";
 
 interface Props {
   trigger: ReactNode;
-  category: Category;
+  category: { id: string, name: string; type: string };
 }
 
 function DeleteCategoryDialog({ category, trigger }: Props) {
@@ -28,7 +24,22 @@ function DeleteCategoryDialog({ category, trigger }: Props) {
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
-    mutationFn: DeleteCategory,
+    mutationFn: async ({ name, type }: { name: string; type: TransactionType }) => {
+      const response = await fetch(`http://localhost:3000/api/categories/${category.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, type }),
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete category");
+      }
+
+      return response.json();
+    },
     onSuccess: async () => {
       toast.success("Category deleted successfully", {
         id: categoryIdentifier,
@@ -44,6 +55,7 @@ function DeleteCategoryDialog({ category, trigger }: Props) {
       });
     },
   });
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
@@ -51,8 +63,7 @@ function DeleteCategoryDialog({ category, trigger }: Props) {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            category
+            This action cannot be undone. This will permanently delete your category.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

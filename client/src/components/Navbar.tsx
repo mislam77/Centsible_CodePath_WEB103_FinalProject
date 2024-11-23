@@ -2,7 +2,7 @@ import Logo from "../assets/centsible-logo.png";
 import { buttonVariants } from "./ui/button";
 import { cn } from "../lib/utils";
 import { useLocation } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const items = [
     { label: "Dashboard", link: "/" },
@@ -11,11 +11,33 @@ const items = [
 ];
 
 export const Navbar = () => {
+    const navigate = useNavigate();
+
+    const handleSignOut = async () => {
+        try {
+            const response = await fetch("http://localhost:3000/api/auth/logout", {
+                method: "POST",
+                credentials: "include", // Ensure cookies are sent with the request
+            });
+
+            if (response.ok) {
+                // Navigate to the login page after successful logout
+                navigate("/signin");
+            } else {
+                console.error("Failed to log out");
+            }
+        } catch (error) {
+            console.error("Error logging out:", error);
+        }
+    };
+
     return (
         <div className="border-separate border-b bg-[#3D3D3D]">
             <nav className="container flex items-center justify-between px-8">
                 <div className="flex h-[80px] min-h-[60px] items-center gap-x-4">
-                    <img src={Logo} alt="Logo" style={{ width: '220px', height: 'auto' }} />
+                    <Link to="/">
+                        <img src={Logo} alt="Logo" style={{ width: "220px", height: "auto" }} />
+                    </Link>
                     <div className="flex h-full text-background">
                         {items.map((item) => (
                             <NavbarItem
@@ -26,13 +48,18 @@ export const Navbar = () => {
                         ))}
                     </div>
                 </div>
-                <div className="flex items-center gap-2 text-white">
-                    Sign Out
+                <div className="flex items-center gap-2">
+                    <button
+                        className={cn(buttonVariants({ variant: "outline" }), "text-black")}
+                        onClick={handleSignOut}
+                    >
+                        Sign Out
+                    </button>
                 </div>
             </nav>
         </div>
     );
-}
+};
 
 function NavbarItem({
     link,

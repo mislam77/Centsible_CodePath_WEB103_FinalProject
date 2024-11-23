@@ -1,46 +1,46 @@
 import { Request, Response } from "express";
 import { pool } from "../config/database";
 
-// Fetch history data
+interface AuthenticatedUser {
+  id: number;
+  username: string;
+}
+
 export const getHistoryData = async (req: Request, res: Response): Promise<void> => {
   try {
-    if (!req.isAuthenticated() || !req.user) {
-      res.status(401).json({ error: "Unauthorized" });
+    const userId = (req.user as AuthenticatedUser)?.id; // Assuming Passport.js sets `req.user`
+    const year = parseInt(req.query.year as string, 10);
+    const month = req.query.month ? parseInt(req.query.month as string, 10) : undefined;
+
+    if (!userId || isNaN(year)) {
+      res.status(400).json({ error: "Invalid parameters" });
       return;
     }
 
-    const userId = (req.user as { id: number }).id;
-    const { timeframe, year, month } = req.query;
-
-    if (!timeframe || !year) {
-      res.status(400).json({ error: "Missing required query parameters" });
-      return;
-    }
-
-    // Define query for month and year
-    let query = `
-      SELECT day, month, year, SUM(income) AS income, SUM(expense) AS expense
-      FROM Transactions
-      WHERE userId = $1 AND year = $2
+    const query = `
+      SELECT
+        EXTRACT(YEAR FROM date) AS year,
+        EXTRACT(MONTH FROM date) AS month,
+        EXTRACT(DAY FROM date) AS day,
+        COALESCE(SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END), 0) AS income,
+        COALESCE(SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END), 0) AS expense
+      FROM Transaction
+      WHERE userId = $1 AND EXTRACT(YEAR FROM date) = $2
+      ${month !== undefined ? "AND EXTRACT(MONTH FROM date) = $3" : ""}
+      GROUP BY year, month, day
+      ORDER BY year, month, day;
     `;
-    const params: (string | number)[] = [userId, year];
 
-    if (timeframe === "month") {
-      if (!month) {
-        res.status(400).json({ error: "Month is required for monthly data" });
-        return;
-      }
-      query += " AND month = $3";
+    const params: (string | number)[] = [userId, year];
+    if (month !== undefined) {
       params.push(month);
     }
 
-    query += " GROUP BY day, month, year ORDER BY year, month, day";
-
     const result = await pool.query(query, params);
 
-    res.json(result.rows);
-  } catch (err) {
-    console.error("Error fetching history data:", err);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("Error fetching history data:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };

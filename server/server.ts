@@ -9,6 +9,7 @@ import overviewRoutes from "./routes/overview";
 import historyPeriodsRoutes from "./routes/historyPeriods";
 import statsRoutes from "./routes/stats";
 import transactionsRoutes from "./routes/transactions";
+import categoryRoutes from "./routes/category";
 import cors from "cors";
 
 const app = express();
@@ -48,6 +49,7 @@ app.use("/api/overview", overviewRoutes);
 app.use("/api/history-periods", historyPeriodsRoutes);
 app.use("/api/stats", statsRoutes);
 app.use("/api/transactions", transactionsRoutes);
+app.use("/api/categories", categoryRoutes);
 
 // Start server
 const PORT = 3000;

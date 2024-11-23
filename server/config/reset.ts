@@ -5,7 +5,7 @@ const resetDatabase = async () => {
     try {
         // Drop existing tables in reverse order of dependency
         await pool.query(`
-            DROP TABLE IF EXISTS UserCategory, Transaction, Category, MonthHistory, YearHistory, UserSettings, Users
+            DROP TABLE IF EXISTS Transaction, Category, Users
         `);
 
         // Create Users table
@@ -14,14 +14,6 @@ const resetDatabase = async () => {
                 id SERIAL PRIMARY KEY,
                 username TEXT NOT NULL UNIQUE,
                 password TEXT NOT NULL
-            );
-        `);
-
-        // Create UserSettings table
-        await pool.query(`
-            CREATE TABLE UserSettings (
-                userId INT PRIMARY KEY REFERENCES Users(id) ON DELETE CASCADE,
-                currency TEXT NOT NULL
             );
         `);
 
@@ -34,7 +26,7 @@ const resetDatabase = async () => {
                 userId INT NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
                 icon TEXT NOT NULL,
                 type TEXT DEFAULT 'income',
-                UNIQUE (name, userId, type)
+                UNIQUE (name, userId, type) -- Ensures unique category names per user and type
             );
         `);
 
@@ -49,41 +41,9 @@ const resetDatabase = async () => {
                 date TIMESTAMP NOT NULL,
                 userId INT NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
                 categoryId UUID NOT NULL REFERENCES Category(id) ON DELETE CASCADE,
-                type TEXT DEFAULT 'income'
-            );
-        `);
-
-        // Create UserCategory table for many-to-many relationship
-        await pool.query(`
-            CREATE TABLE UserCategory (
-                userId INT NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
-                categoryId UUID NOT NULL REFERENCES Category(id) ON DELETE CASCADE,
-                PRIMARY KEY (userId, categoryId)
-            );
-        `);
-
-        // Create MonthHistory table
-        await pool.query(`
-            CREATE TABLE MonthHistory (
-                userId INT NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
-                day INT NOT NULL,
-                month INT NOT NULL,
-                year INT NOT NULL,
-                income FLOAT NOT NULL,
-                expense FLOAT NOT NULL,
-                PRIMARY KEY (day, month, year, userId)
-            );
-        `);
-
-        // Create YearHistory table
-        await pool.query(`
-            CREATE TABLE YearHistory (
-                userId INT NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
-                month INT NOT NULL,
-                year INT NOT NULL,
-                income FLOAT NOT NULL,
-                expense FLOAT NOT NULL,
-                PRIMARY KEY (month, year, userId)
+                categoryName TEXT NOT NULL,
+                type TEXT DEFAULT 'income',
+                FOREIGN KEY (categoryName, userId, type) REFERENCES Category(name, userId, type) ON DELETE CASCADE
             );
         `);
 

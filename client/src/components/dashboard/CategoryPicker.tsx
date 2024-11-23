@@ -1,6 +1,3 @@
-"use client";
-
-import CreateCategoryDialog from "@/app/(dashboard)/_components/CreateCategoryDialog";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -15,12 +12,17 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { TransactionType } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { Category } from "@prisma/client";
-import { useQuery } from "@tanstack/react-query";
+import { TransactionType } from "@/lib/types"; // Adjust this path as necessary
 import { Check, ChevronsUpDown } from "lucide-react";
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+
+interface Category {
+  id: string;
+  name: string;
+  icon: string;
+  type: TransactionType;
+}
 
 interface Props {
   type: TransactionType;
@@ -28,29 +30,48 @@ interface Props {
 }
 
 function CategoryPicker({ type, onChange }: Props) {
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState("");
 
   useEffect(() => {
     if (!value) return;
-    // when the value changes, call onChange callback
+    // Trigger the onChange callback whenever the selected value changes
     onChange(value);
   }, [onChange, value]);
 
-  const categoriesQuery = useQuery({
-    queryKey: ["categories", type],
-    queryFn: () =>
-      fetch(`/api/categories?type=${type}`).then((res) => res.json()),
-  });
+  // Fetch categories based on the transaction type
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const selectedCategory = categoriesQuery.data?.find(
-    (category: Category) => category.name === value
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(
+          `http://localhost:3000/api/categories?type=${type}`, {
+            credentials: "include",
+          }
+        );
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, [type]);
+
+  const selectedCategory = categories.find(
+    (category) => category.name === value
   );
 
   const successCallback = useCallback(
     (category: Category) => {
       setValue(category.name);
-      setOpen((prev) => !prev);
+      setOpen(false);
     },
     [setValue, setOpen]
   );
@@ -59,7 +80,7 @@ function CategoryPicker({ type, onChange }: Props) {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant={"outline"}
+          variant="outline"
           role="combobox"
           aria-expanded={open}
           className="w-[200px] justify-between"
@@ -79,33 +100,31 @@ function CategoryPicker({ type, onChange }: Props) {
           }}
         >
           <CommandInput placeholder="Search category..." />
-          <CreateCategoryDialog type={type} successCallback={successCallback} />
           <CommandEmpty>
             <p>Category not found</p>
             <p className="text-xs text-muted-foreground">
-              Tip: Create a new category
+              Tip: You can create a new category.
             </p>
           </CommandEmpty>
           <CommandGroup>
             <CommandList>
-              {categoriesQuery.data &&
-                categoriesQuery.data.map((category: Category) => (
-                  <CommandItem
-                    key={category.name}
-                    onSelect={() => {
-                      setValue(category.name);
-                      setOpen((prev) => !prev);
-                    }}
-                  >
-                    <CategoryRow category={category} />
-                    <Check
-                      className={cn(
-                        "mr-2 w-4 h-4 opacity-0",
-                        value === category.name && "opacity-100"
-                      )}
-                    />
-                  </CommandItem>
-                ))}
+              {categories.map((category) => (
+                <CommandItem
+                  key={category.id}
+                  onSelect={() => {
+                    setValue(category.name);
+                    setOpen(false);
+                  }}
+                >
+                  <CategoryRow category={category} />
+                  <Check
+                    className={cn(
+                      "mr-2 w-4 h-4 opacity-0",
+                      value === category.name && "opacity-100"
+                    )}
+                  />
+                </CommandItem>
+              ))}
             </CommandList>
           </CommandGroup>
         </Command>
@@ -116,7 +135,7 @@ function CategoryPicker({ type, onChange }: Props) {
 
 export default CategoryPicker;
 
-function CategoryRow({ category }: { category: Category }) {
+export function CategoryRow({ category }: { category: Category }) {
   return (
     <div className="flex items-center gap-2">
       <span role="img">{category.icon}</span>

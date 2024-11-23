@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Period, Timeframe } from "@/lib/types";
 
 interface Props {
   period: Period;
@@ -22,7 +23,7 @@ function HistoryPeriodSelector({
   timeframe,
   setTimeframe,
 }: Props) {
-  const [historyPeriods, setHistoryPeriods] = useState<number[]>([]);
+  const [historyPeriods, setHistoryPeriods] = useState<number[]>([]); // Array of years only
   const [isLoading, setIsLoading] = useState(true);
 
   // Fetch available years from the backend
@@ -97,12 +98,12 @@ function YearSelector({
       onValueChange={(value) => {
         setPeriod({
           month: period.month,
-          year: parseInt(value),
+          year: parseInt(value, 10),
         });
       }}
     >
       <SelectTrigger className="w-[180px]">
-        <SelectValue />
+        <SelectValue placeholder="Select Year" />
       </SelectTrigger>
       <SelectContent>
         {years.map((year) => (
@@ -124,11 +125,11 @@ function MonthSelector({
 }) {
   return (
     <Select
-      value={period.month.toString()}
+      value={(period.month - 1).toString()} // Adjust for 1-based index
       onValueChange={(value) => {
         setPeriod({
           year: period.year,
-          month: parseInt(value),
+          month: parseInt(value, 10) + 1, // Convert back to 1-based index for state
         });
       }}
     >
@@ -137,10 +138,9 @@ function MonthSelector({
       </SelectTrigger>
       <SelectContent>
         {[...Array(12).keys()].map((month) => {
-          const monthStr = new Date(period.year, month, 1).toLocaleString(
-            "default",
-            { month: "long" }
-          );
+          const monthStr = new Date(0, month, 1).toLocaleString("default", {
+            month: "long",
+          });
 
           return (
             <SelectItem key={month} value={month.toString()}>

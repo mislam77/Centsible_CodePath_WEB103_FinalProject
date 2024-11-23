@@ -22,16 +22,19 @@ function CategoriesStats({ from, to }: Props) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (!from || !to) {
+      console.error("Invalid date range provided to CategoriesStats");
+      return;
+    }
+  
     const fetchCategoriesData = async () => {
       try {
         setIsLoading(true);
         const response = await fetch(
           `http://localhost:3000/api/stats/categories?from=${from.toISOString()}&to=${to.toISOString()}`,
-          {
-            credentials: "include",
-          }
+          { credentials: "include" }
         );
-
+  
         if (response.ok) {
           const data = await response.json();
           setCategoriesData(data);
@@ -44,9 +47,9 @@ function CategoriesStats({ from, to }: Props) {
         setIsLoading(false);
       }
     };
-
+  
     fetchCategoriesData();
-  }, [from, to]);
+  }, [from, to]);  
 
   const dataAvailable = categoriesData.length > 0;
 
