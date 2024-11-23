@@ -22,7 +22,6 @@ app.use(
     saveUninitialized: false,
     cookie: {
       secure: true, // Set this to `true` if using HTTPS
-      httpOnly: true,
       sameSite: "none",
     },
   })
